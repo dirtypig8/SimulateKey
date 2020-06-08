@@ -1,0 +1,14 @@
+[
+  {
+    "name": "keyboard",
+    "event": "B",
+    "sleep": 0.5,
+    "repeat": 1
+  },
+  {
+    "name": "keyboard",
+    "event": "A",
+    "sleep": 1,
+    "repeat": 10
+  }
+]

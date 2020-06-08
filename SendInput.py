@@ -38,12 +38,14 @@ class Input(ctypes.Structure):
 
 # Actuals Functions
 
+
 def PressKey(hexKeyCode):
     extra = ctypes.c_ulong(0)
     ii_ = Input_I()
-    ii_.ki = KeyBdInput( 0, hexKeyCode, 0x0008, 0, ctypes.pointer(extra) )
-    x = Input( ctypes.c_ulong(1), ii_ )
+    ii_.ki = KeyBdInput(0, hexKeyCode, 0x0008, 0, ctypes.pointer(extra))
+    x = Input(ctypes.c_ulong(1), ii_)
     ctypes.windll.user32.SendInput(1, ctypes.pointer(x), ctypes.sizeof(x))
+
 
 def ReleaseKey(hexKeyCode):
     extra = ctypes.c_ulong(0)
@@ -74,8 +76,7 @@ def ack():
         for i in range(30):
             PressKey(KEY_A)
             ReleaseKey(KEY_A)
-            time.sleep(2)
-            # player_teleport("left")
+            time.sleep(1)
             att_count += 1
             print('Loop : {}'.format(att_count))
 
@@ -172,10 +173,7 @@ def ack_sock():
             time.sleep(0.5 * random.random())
         left_right_count += 1
 
-# directx scan codes http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
-if __name__ == '__main__':
-    # while True:
-    #     print(pyautogui.position())
+def wash_hp():
     sleep_time = 0.2
     time.sleep(2)
     while True:
@@ -187,6 +185,13 @@ if __name__ == '__main__':
         time.sleep(sleep_time)
         pyautogui.click(x=661, y=447)
         time.sleep(1)
+
+# directx scan codes http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
+if __name__ == '__main__':
+    ack()
+    # while True:
+    #     print(pyautogui.position())
+
 
     # time.sleep(20000)
     #
