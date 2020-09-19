@@ -188,22 +188,49 @@ def wash_hp():
 
 # directx scan codes http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
 if __name__ == '__main__':
-    ack()
-    # while True:
-    #     print(pyautogui.position())
+    # ack()
+    Key_1 = 0x02
+    Key_0 = 0x0B
+    Key_up = 0xc8
+    Key_enter = 0x1c
+    sec = 3
+    for n in range(sec):
+        print('{}秒後開始'.format(sec - n))
+        time.sleep(1)
+    while True:
+        print(pyautogui.position())
 
+        PressKey(Key_enter)
+        ReleaseKey(Key_enter)
+        time.sleep(0.1)
 
-    # time.sleep(20000)
-    #
+        player_teleport('up')
+        time.sleep(0.1)
+
+        player_teleport('up')
+        time.sleep(0.1)
+
+        PressKey(Key_enter)
+        ReleaseKey(Key_enter)
+        time.sleep(0.1)
+
+        PressKey(Key_enter)
+        ReleaseKey(Key_enter)
+        # PressKey(Key_1)
+        # ReleaseKey(Key_1)
+        time.sleep(1) 
+    # sleep_time = 1
+    # time.sleep(2)
+    
     # Key_1 = 0x02
     # Key_0 = 0x0B
     # Key_enter = 0x1c
     # count = 0
-    #
-    #
-    #
+    
+    
+    
     # print(pyautogui.position())
-    #
+    
     # time.sleep(3)
     # while True:
     #     time.sleep(sleep_time)
@@ -218,24 +245,25 @@ if __name__ == '__main__':
     #     pyautogui.rightClick(x=463, y=392)
     #     pyautogui.click()
     #     time.sleep(sleep_time)
-    #
+    
     #     if count % 2 == 1:
     #         pyautogui.rightClick(x=383, y=345)
     #         pyautogui.click()
     #     else:
     #         pyautogui.rightClick(x=426, y=327)
     #         pyautogui.click()
-    #
+    
     #     time.sleep(sleep_time)
     #     PressKey(Key_1)
     #     ReleaseKey(Key_1)
+    #     time.sleep(1)
     #     PressKey(Key_0)
     #     ReleaseKey(Key_0)
     #     time.sleep(sleep_time)
-    #
+    
     #     for i in range(3):
     #         PressKey(Key_enter)
     #         ReleaseKey(Key_enter)
     #         time.sleep(sleep_time)
-    #
+    
     #     count += 1
