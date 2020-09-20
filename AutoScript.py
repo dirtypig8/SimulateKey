@@ -3,15 +3,17 @@ import time
 import pyautogui
 import random
 import json
-from MainWindow import MainWindow
-from PyQt5.QtWidgets import QApplication
-from PyQt5 import sip
+# from MainWindow import MainWindow
+# from PyQt5.QtWidgets import QApplication
+# from PyQt5 import sip
 
 key_dict = {"A": 0x1E, "B": 0x30, "C": 0x2E, "D": 0x20, "E": 0x12, "F": 0x21, "G": 0x22, "H": 0x23,
             "I": 0x17, "J": 0x24, "K": 0x25, "L": 0x26, "M": 0x32, "N": 0x31, "O": 0x18, "P": 0x19,
             "Q": 0x10, "R": 0x13, "S": 0x1F, "T": 0x14, "U": 0x16, "V": 0x2F, "W": 0x11, "X": 0x2D,
             "Y": 0x15, "Z": 0x2C}
 
+
+arrow_keys_list = ['up','left','right','down']
 SendInput = ctypes.windll.user32.SendInput
 
 # C struct redefinitions
@@ -92,7 +94,9 @@ class AutoScript:
 
     def script_process(self):
         for script in self.script_list:
-            if script['name'] == 'auto_left_and_right':
+            if script['name'] == 'auto_send_message':
+                self.auto_send_message(do_sleep=script['sleep'])
+            elif script['name'] == 'auto_left_and_right':
                 self.auto_left_and_right(do_sleep=script['sleep'])
             else:
                 self.keybroad_controller(event=script['event'],
@@ -113,13 +117,39 @@ class AutoScript:
         self.left_right_count += 1
         print('auto_left_and_right: {}'.format(self.left_right_count))
 
+    def auto_send_message(self, do_sleep):
+        print('auto_send_message')
+        Key_enter = 0x1c
+        delay = 0.1
+
+        PressKey(Key_enter)
+        ReleaseKey(Key_enter)
+        time.sleep(delay)
+
+        player_teleport('up')
+        time.sleep(delay)
+
+        player_teleport('up')
+        time.sleep(delay)
+
+        PressKey(Key_enter)
+        ReleaseKey(Key_enter)
+        time.sleep(delay)
+
+        PressKey(Key_enter)
+        ReleaseKey(Key_enter)
+
+        time.sleep(do_sleep)
 
     def keybroad_controller(self, event, do_sleep, repeats):
         for count in range(repeats):
-            PressKey(key_dict[event])
-            # time.sleep(10)
-            ReleaseKey(key_dict[event])
-            time.sleep(do_sleep)
+            if event in arrow_keys_list:
+                player_teleport(event)
+                time.sleep(do_sleep)
+            else:
+                PressKey(key_dict[event])
+                ReleaseKey(key_dict[event])
+                time.sleep(do_sleep)
 
             print('event: {}, Loop : {}'.format(event, count))
 
