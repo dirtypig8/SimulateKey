@@ -177,21 +177,24 @@ def wash_hp():
     sleep_time = 0.2
     time.sleep(2)
     while True:
-        pyautogui.click(clicks=2, x=140, y=95)
+        pyautogui.click(clicks=2, x=28, y=110)
         time.sleep(sleep_time)
         pyautogui.click(x=719, y=378)
         time.sleep(sleep_time)
         pyautogui.click(x=719, y=361)
         time.sleep(sleep_time)
-        pyautogui.click(x=661, y=447)
+        pyautogui.click(x=659, y=449)
+        time.sleep(sleep_time)
+        pyautogui.click(clicks=2, x=155, y=61)
         time.sleep(1)
 
 # directx scan codes http://www.gamespp.com/directx/directInputKeyboardScanCodes.html
 if __name__ == '__main__':
-    ack()
     # while True:
     #     print(pyautogui.position())
-
+    wash_hp()
+    # while True:
+    #     print(pyautogui.position())
 
     # time.sleep(20000)
     #
