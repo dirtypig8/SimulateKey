@@ -1,22 +1,22 @@
-from pynput.keyboard import Key, Controller
-import time
-import pyautogui
-
-def player_teleport(direction):
-    pyautogui.keyDown(direction)
-    # pyautogui.press("ctrl", presses=1, interval=.2)
-    time.sleep(0.05)
-    pyautogui.keyUp(direction)
+from MainWindow import MainWindow  
+from PyQt5.QtWidgets import QApplication
+from PyQt5 import sip
+import sys
+from SystemInitializer.InitializeConfigDictionary import InitializeConfigDictionary
+from SystemInitializer.InitializeLogWritter import InitializeLogWriter
+from SystemInitializer.StartServing import StartServing
+from ArgParser import ArgParser
+from CoreConfig.ConfigDictionary import ConfigDictionary
 
 if __name__ == '__main__':
-    # keyboard = Controller()
-    time.sleep(3)
-    # keyboard.press(Key.space)
-    # time.sleep(3)
-    # keyboard.release(Key.space)
-    player_teleport("left")
-    # pyautogui.press("w", pause=.5)
-    # pyautogui.press("pagedown")
-    # pyautogui.keyDown('a')
-    # time.sleep(1)
-    # pyautogui.keyUp('a')
+    commandline_args = ArgParser().get_args()
+    InitializeConfigDictionary().execute(commandline_args.config_path)
+    InitializeLogWriter.execute()
+    StartServing().execute()
+
+    app = QApplication([])
+
+    main_window = MainWindow().get_main_window()
+    main_window.setFixedSize(1024, 768)
+    main_window.show()
+    sys.exit(app.exec_())
