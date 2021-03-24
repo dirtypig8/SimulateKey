@@ -6,11 +6,14 @@ import json
 # from MainWindow import MainWindow
 # from PyQt5.QtWidgets import QApplication
 # from PyQt5 import sip
+from ScreenInformProcess import ScreenInformProcess
+from threading import Thread
+
 
 key_dict = {"A": 0x1E, "B": 0x30, "C": 0x2E, "D": 0x20, "E": 0x12, "F": 0x21, "G": 0x22, "H": 0x23,
             "I": 0x17, "J": 0x24, "K": 0x25, "L": 0x26, "M": 0x32, "N": 0x31, "O": 0x18, "P": 0x19,
             "Q": 0x10, "R": 0x13, "S": 0x1F, "T": 0x14, "U": 0x16, "V": 0x2F, "W": 0x11, "X": 0x2D,
-            "Y": 0x15, "Z": 0x2C}
+            "Y": 0x15, "Z": 0x2C, "Enter": 0x1c}
 
 
 arrow_keys_list = ['up','left','right','down']
@@ -73,7 +76,9 @@ def player_teleport(direction):
 
 
 class AutoScript:
-    def __init__(self):
+    def __init__(self, callback_show_message=None):
+        self.callback_show_message = callback_show_message
+        self.stop = False
         self.init()
         self.get_script_json()
 
@@ -82,43 +87,49 @@ class AutoScript:
         self.script_list = None
 
     def get_script_json(self):
-        f = open("script_list.json", 'r')
-        self.script_list = json.load(f)
-        f.close()
+        try:
+            f = open("script_list.json", 'r')
+            self.script_list = json.load(f)
+            f.close()
+        except Exception as e:
+            print('=' * 20)
+            print('{}\n{}'.format(e,'script_list.json load error'))
+            print('=' * 20)
 
     def buffer_time(self):
         sec = 3
         for n in range(sec):
-            print('{}秒後開始'.format(sec - n))
+            self.show_message('{}秒後開始'.format(sec - n))
             time.sleep(1)
 
     def script_process(self):
         for script in self.script_list:
-            if script['name'] == 'auto_send_message':
-                self.auto_send_message(do_sleep=script['sleep'])
-            elif script['name'] == 'auto_left_and_right':
-                self.auto_left_and_right(do_sleep=script['sleep'])
-            else:
-                self.keybroad_controller(event=script['event'],
-                                         do_sleep=script['sleep'],
-                                         repeats=script['repeat'])
+            if self.stop is False:
+                if script['name'] == 'auto_send_message':
+                    self.auto_send_message(do_sleep=script['sleep'])
+                elif script['name'] == 'auto_left_and_right':
+                    self.auto_left_and_right(do_sleep=script['sleep'])
+                else:
+                    self.keybroad_controller(event=script['event'],
+                                             do_sleep=script['sleep'],
+                                             repeats=script['repeat'])
 
     def auto_left_and_right(self, do_sleep):
         if self.left_right_count % 2 == 1:
-            print('left')
+            self.show_message('left')
             player_teleport("left")
             time.sleep(do_sleep)
             # time.sleep(0.5 * random.random())
         else:
-            print('right')
+            self.show_message('right')
             player_teleport("right")
             time.sleep(do_sleep)
             # time.sleep(0.5 * random.random())
         self.left_right_count += 1
-        print('auto_left_and_right: {}'.format(self.left_right_count))
+        self.show_message('auto_left_and_right: {}'.format(self.left_right_count))
 
     def auto_send_message(self, do_sleep):
-        print('auto_send_message')
+        self.show_message('auto_send_message')
         Key_enter = 0x1c
         delay = 0.1
 
@@ -143,27 +154,39 @@ class AutoScript:
 
     def keybroad_controller(self, event, do_sleep, repeats):
         for count in range(repeats):
-            if event in arrow_keys_list:
-                player_teleport(event)
-                time.sleep(do_sleep)
-            else:
-                PressKey(key_dict[event])
-                ReleaseKey(key_dict[event])
-                time.sleep(do_sleep)
+            if self.stop is False:
+                if event in arrow_keys_list:
+                    player_teleport(event)
+                    time.sleep(do_sleep)
+                else:
+                    PressKey(key_dict[event])
+                    ReleaseKey(key_dict[event])
+                    time.sleep(do_sleep)
 
-            print('event: {}, Loop : {}'.format(event, count))
+                self.show_message('event: {}, Loop : {}'.format(event, count))
 
     def execute(self):
         self.buffer_time()
         while True:
             self.script_process()
 
+    def show_message(self, message):
+        if self.callback_show_message is None:
+            print(message)
+        else:
+            self.callback_show_message(message)
 
 
 if __name__ == '__main__':
+    Thread(
+        target=ScreenInformProcess().execute,
+        daemon=True
+    ).start()
+
     obj = AutoScript()
     print(obj.script_list)
     obj.execute()
+
     # app = QApplication([])
     #
     # main_window = MainWindow().get_main_window()
