@@ -29,12 +29,8 @@ class IndexWidget(QtWidgets.QWidget):
         self.work_widget = TextShowingLabel()
         self.control_widget = ControlWidget(self.work_widget.rest)
 
-
-
-
         layout.addWidget(self.work_widget, stretch=70)
         layout.addWidget(self.control_widget, stretch=30)
-
         self.setLayout(layout)
 
     def load(self):
@@ -46,9 +42,28 @@ class TextShowingLabel(QtWidgets.QWidget):
         super().__init__()
         self.setObjectName("index_widget_text_label")
 
-        layout = QtWidgets.QGridLayout()
+        # layout = QtWidgets.QGridLayout()
+        layout = QtWidgets.QVBoxLayout()
+
         self.cur_button = QrButton("啟動", "Start", "")
-        layout.addWidget(self.cur_button)
+
+        self.scrollArea = QtWidgets.QScrollArea(self)
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QtWidgets.QWidget(self.scrollArea)
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 380, 247))
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
+        self.scrollArea.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
+        self.scrollArea.setObjectName("pay_widget_scroll")
+        self.scrollArea.setStyleSheet("background-color:transparent;border:0;")
+        layout.addWidget(self.scrollArea, stretch=70)
+        layout.addWidget(self.cur_button, stretch=30)
+
+        self.parking_detail_label = ParkingDetailLabel(self.scrollAreaWidgetContents)
+        self.verticalLayoutScroll = QtWidgets.QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayoutScroll.addWidget(self.parking_detail_label)
+
+        QueryDataHandler.parking_detail_label = self.parking_detail_label.add_text
+        # layout.addWidget(self.cur_button)
 
         # with open(DefaultQrConfigPathGetter().execute(),'r') as load_f:
         #     load_dict = json.load(load_f)
@@ -63,6 +78,35 @@ class TextShowingLabel(QtWidgets.QWidget):
 
     def rest(self):
         self.cur_button.init_button()
+
+
+class ParkingDetailLabel(QtWidgets.QLabel):
+    def __init__(self, scrollAreaWidgetContents):
+        super().__init__(scrollAreaWidgetContents)
+        self.setObjectName("pay_widget_parking_detail_label")
+        self.setStyleSheet(
+            """
+              QLabel#pay_widget_parking_detail_label
+              {
+                color: black;
+              };
+            """
+        )
+        self.setWordWrap(True)
+        self.setAlignment(QtCore.Qt.AlignLeft)
+        self.setFont(QtGui.QFont("微軟正黑體", 14, QtGui.QFont.Bold))
+        self.all_message = ''
+        self.load()
+
+    def load(self):
+        self.setText(self.all_message)
+
+    def add_text(self, message):
+        if self.all_message == '':
+            self.setText(self.all_message)
+        self.all_message = '{}\n{}'.format(message, self.all_message)
+        self.setText(self.all_message)
+
 
 class QrButton(FontStretchingButton):
     def __init__(self, rule_name, rule_id, info_shower):

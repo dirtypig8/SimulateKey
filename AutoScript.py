@@ -13,7 +13,8 @@ from threading import Thread
 key_dict = {"A": 0x1E, "B": 0x30, "C": 0x2E, "D": 0x20, "E": 0x12, "F": 0x21, "G": 0x22, "H": 0x23,
             "I": 0x17, "J": 0x24, "K": 0x25, "L": 0x26, "M": 0x32, "N": 0x31, "O": 0x18, "P": 0x19,
             "Q": 0x10, "R": 0x13, "S": 0x1F, "T": 0x14, "U": 0x16, "V": 0x2F, "W": 0x11, "X": 0x2D,
-            "Y": 0x15, "Z": 0x2C, "Enter": 0x1c}
+            "Y": 0x15, "Z": 0x2C, "Enter": 0x1c, "0": 0x0B, "1": 0x02, "2":0x03, "3": 0x04 , "4": 0x05, "5":0x06,
+            "6": 0x07 ,"7":0x08, "8":0x09, "9": 0x0A, "Esc": 0x01}
 
 
 arrow_keys_list = ['up','left','right','down']
@@ -109,12 +110,24 @@ class AutoScript:
                     self.auto_send_message(do_sleep=script['sleep'])
                 elif script['name'] == 'auto_left_and_right':
                     self.auto_left_and_right(do_sleep=script['sleep'])
+                elif script['name'] == 'mouse_click':
+                    self.mouse_controller(do_sleep=script['sleep'],
+                                          click_count=script['click_count'],
+                                          x=script['x'],
+                                          y=script['y'])
                 else:
                     self.keybroad_controller(event=script['event'],
                                              do_sleep=script['sleep'],
                                              repeats=script['repeat'])
 
+    def mouse_controller(self, do_sleep, click_count, x, y):
+        pyautogui.click(clicks=click_count, x=x, y=y)
+        time.sleep(do_sleep)
+
+        self.show_message('mouse_click: {}, x y : {},{}'.format(click_count, x, y))
+
     def auto_left_and_right(self, do_sleep):
+        time.sleep(1)
         if self.left_right_count % 2 == 1:
             self.show_message('left')
             player_teleport("left")

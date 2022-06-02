@@ -44,8 +44,9 @@ class HeaderWidget:
 
         layout = QtWidgets.QHBoxLayout()
         name_label = self.__get_name_label()
-        layout.addWidget(FontStretchingLabel(resize_ratio=0.7), stretch=26)
-        layout.addWidget(name_label, stretch=74)
+        # layout.addWidget(FontStretchingLabel(resize_ratio=0.7), stretch=26)
+        # layout.addWidget(name_label, stretch=74)
+        layout.addWidget(name_label)
         header_widget.setLayout(layout)
         return header_widget
 
@@ -54,7 +55,7 @@ class HeaderWidget:
         name_label = FontStretchingLabel(resize_ratio=0.6)
         name_label.setAlignment(QtCore.Qt.AlignCenter)
         name_label.setStyleSheet("color: {};".format(ConfigDictionary().config_dict["name_color"]))
-        name_label.setText("{}".format(ConfigDictionary().config_dict["lot_name"]))
+        name_label.setText("{}".format("腳本"))
         return name_label
 
 
@@ -63,23 +64,33 @@ class FooterWidget:
         footer_widget = QtWidgets.QWidget()
 
         layout = QtWidgets.QHBoxLayout()
-        cash_clearing_logo_button = CashClearingLogoButton()
+        # cash_clearing_logo_button = CashClearingLogoButton()
         timer_label = self.__get_timer_label()
-
-        layout.addWidget(cash_clearing_logo_button, stretch=1)
-        layout.addWidget(timer_label, stretch=9)
-
+        author_label = self.__get_author_label()
+        # layout.addWidget(cash_clearing_logo_button, stretch=1)
+        # layout.addWidget(timer_label, stretch=9)
+        layout.addWidget(timer_label)
+        layout.addWidget(author_label)
         footer_widget.setLayout(layout)
 
         return footer_widget
 
     @staticmethod
     def __get_timer_label():
-        timer_label = FontStretchingLabel(resize_ratio=0.9)
+        timer_label = FontStretchingLabel(resize_ratio=0.6)
+        timer_label.setAlignment(QtCore.Qt.AlignLeft)
         timer_label.setText(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         timer = QtCore.QTimer(timer_label)
-        timer.timeout.connect(lambda: timer_label.setText(datetime.now().strftime("%Y-%m-%d   %H:%M:%S")+"          店櫃: {}".format(ConfigDictionary.config_dict['shop_id'])))
+        timer.timeout.connect(lambda: timer_label.setText(datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
         timer.start(1)
+
+        return timer_label
+
+    @staticmethod
+    def __get_author_label():
+        timer_label = FontStretchingLabel(resize_ratio=0.5)
+        timer_label.setAlignment(QtCore.Qt.AlignRight)
+        timer_label.setText("作者信箱:{}".format("dirtypig8@gmail.com"))
 
         return timer_label
 

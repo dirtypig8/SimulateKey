@@ -12,11 +12,12 @@ if __name__ == '__main__':
     commandline_args = ArgParser().get_args()
     InitializeConfigDictionary().execute(commandline_args.config_path)
     InitializeLogWriter.execute()
-    StartServing().execute()
+
 
     app = QApplication([])
 
     main_window = MainWindow().get_main_window()
     main_window.setFixedSize(1024, 768)
     main_window.show()
+    StartServing().execute()
     sys.exit(app.exec_())
